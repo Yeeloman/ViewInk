@@ -15,7 +15,7 @@ ViewInk is a lightweight, dynamic, and customizable modal popup library for web 
 You can install ViewInk via npm:
 
 ```bash
-npm install ViewInk
+npm install viewink
 ```
 
 ### API Reference
