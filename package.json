@@ -1,7 +1,7 @@
 {
   "name": "viewink",
-  "version": "1.0.0",
-  "description":"ViewInk is a lightweight, dynamic, and highly customizable modal library designed to seamlessly open iframes in a popup. Perfect for e-commerce product previews, virtual try-ons, or any use case requiring embedded content, ViewInk offers a smooth, modern, and developer-friendly experience. With support for dynamic URL placeholders, event hooks, and easy integration, ViewInk empowers you to create interactive popups with minimal effort.",
+  "version": "1.0.1",
+  "description": "ViewInk is a lightweight, dynamic, and highly customizable modal library designed to seamlessly open iframes in a popup. Perfect for e-commerce product previews, virtual try-ons, or any use case requiring embedded content, ViewInk offers a smooth, modern, and developer-friendly experience. With support for dynamic URL placeholders, event hooks, and easy integration, ViewInk empowers you to create interactive popups with minimal effort.",
   "keywords": [
     "modal",
     "popup",
