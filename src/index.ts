@@ -7,11 +7,41 @@ export type ModalPopupConfig = {
     url?: string;
     onClose?: () => void;
     onOpen?: () => void;
-    // styles?: {
-    //     container?: Record<string, string>;
-    //     content?: Record<string, string>;
-    //     iframe?: Record<string, string>;
-    // };
+    styles?: {
+        container?: Record<string, string>;
+        content?: Record<string, string>;
+        iframe?: Record<string, string>;
+    };
+};
+
+const DEFAULT_STYLES = {
+    container: {
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backdropFilter: 'blur(10px)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: '1000',
+    },
+    content: {
+        backgroundColor: 'white',
+        padding: '20px',
+        borderRadius: '8px',
+        width: '80%',
+        maxWidth: '80%',
+        position: 'relative',
+    },
+    iframe: {
+        width: '100%',
+        height: '80vh',
+        border: 'none',
+        borderRadius: '4px',
+    },
 };
 
 /**
@@ -40,23 +70,25 @@ export class ModalPopup {
     private onClose: () => void;
     private onOpen: () => void;
     private modalElementMap: WeakMap<ModalPopup, HTMLElement>;
+    private cfg: ModalPopupConfig;
 
     constructor(cfg: ModalPopupConfig) {
         this.modalUrl = cfg.url || null;
         this.onClose = cfg.onClose || (() => { });
         this.onOpen = cfg.onOpen || (() => { });
         this.modalElementMap = new WeakMap();
+        this.cfg = cfg;
+
+        function debounce<T extends (...args: any[]) => void>(func: T, wait: number): (...args: Parameters<T>) => void {
+            let timeout: ReturnType<typeof setTimeout>;
+            return function (this: ThisParameterType<T>, ...args: Parameters<T>) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
 
         if (typeof window !== 'undefined' && typeof document !== 'undefined') {
             // Cleanup modal before page reload
-            function debounce<T extends (...args: any[]) => void>(func: T, wait: number): (...args: Parameters<T>) => void {
-                let timeout: ReturnType<typeof setTimeout>;
-                return function (this: ThisParameterType<T>, ...args: Parameters<T>) {
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => func.apply(this, args), wait);
-                };
-            }
-
             window.addEventListener(
                 'beforeunload',
                 debounce(() => {
@@ -80,6 +112,17 @@ export class ModalPopup {
         if (!this.modalUrl) {
             throw new Error('URL is required.');
         }
+
+        const validateParams = (params: Record<string, string>) => {
+            for (const value of Object.values(params)) {
+                if (/[^a-zA-Z0-9-_]/.test(value)) {
+                    throw new Error('Invalid characters in URL parameters.');
+                }
+            }
+        };
+
+        validateParams(pathParams);
+        validateParams(queryParams);
 
         // Replace path placeholders with actual values
         let url = this.modalUrl;
@@ -138,6 +181,20 @@ export class ModalPopup {
     }
 
     /**
+     * Represents a modal popup that can be opened and closed within a browser environment.
+     * The modal is configured using a `ModalPopupConfig` object, which specifies the URL,
+     * callbacks for open and close events, and optional styles. The modal content is loaded
+     * in an iframe, and the modal can be closed by clicking outside the content or on a close button.
+     * 
+     * The class ensures that only one modal is open at a time and provides methods to build
+     * URLs with path and query parameters. It also handles cleanup before page reload.
+     */
+    private applyStyles(element: HTMLElement, styles: Record<string, string>): void {
+        for (const [key, value] of Object.entries(styles)) {
+            element.style[key as any] = value;
+        }
+    }
+    /**
      * Creates and returns a modal element containing an iframe with the specified URL.
      * The modal includes a close button and is styled to cover the entire viewport.
      * Clicking outside the modal content or on the close button will close the modal.
@@ -146,48 +203,34 @@ export class ModalPopup {
      * @returns The constructed modal container element.
      */
     private createModalElement(url: string): HTMLElement {
-        // Create the modal container and apply styles directly to it
-        const modalContainer = document.createElement('div');
-        modalContainer.style.cssText = `
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 100% !important;
-        height: 100% !important;
-        background-color: rgba(0, 0, 0, 0.5) !important;
-        backdrop-filter: blur(10px) !important;
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
-        z-index: 1000 !important;
-    `;
+        // Merge user styles with default styles
+        const containerStyles = Object.assign({}, DEFAULT_STYLES.container, this.cfg.styles?.container);
+        const contentStyles = Object.assign({}, DEFAULT_STYLES.content, this.cfg.styles?.content);
+        const iframeStyles = Object.assign({}, DEFAULT_STYLES.iframe, this.cfg.styles?.iframe);
 
-        // Create the modal content (directly inside the modal container)
+        // Create the modal container and apply styles
+        const modalContainer = document.createElement('div');
+        this.applyStyles(modalContainer, containerStyles);
+
+        // Create the modal content and apply styles
         const modalContent = document.createElement('div');
-        modalContent.style.cssText = `
-        background-color: white !important;
-        padding: 20px !important;
-        border-radius: 8px !important;
-        width: 80% !important;
-        max-width: 80% !important;
-        position: relative !important;
-    `;
+        this.applyStyles(modalContent, contentStyles);
 
         // Create the close button
         const closeButton = document.createElement('button');
         closeButton.textContent = '×';
         closeButton.style.cssText = `
-        position: absolute !important;
-        top: 10px !important;
-        right: 10px !important;
-        background: none !important;
-        border: none !important;
-        font-size: 20px !important;
-        cursor: pointer !important;
-    `;
+            position: absolute !important;
+            top: 10px !important;
+            right: 10px !important;
+            background: none !important;
+            border: none !important;
+            font-size: 20px !important;
+            cursor: pointer !important;
+        `;
         closeButton.setAttribute('aria-label', 'Close');
 
-        // Create the iframe
+        // Create the iframe and apply styles
         const iframe = document.createElement('iframe');
         iframe.src = url;
         // Flag	                                    Description
@@ -202,18 +245,12 @@ export class ModalPopup {
         // allow-top-navigation	                    Allows the iframe to navigate the top-level browsing context (i.e., the parent page).
         // allow-top-navigation-by-user-activation	Allows the iframe to navigate the top-level browsing context only if triggered by user interaction (e.g., a click).
         // iframe.setAttribute('sandbox', '');
-        iframe.style.cssText = `
-        width: 100% !important;
-        height: 80vh !important;
-        border: none !important;
-        border-radius: 4px !important;
-    `;
+        this.applyStyles(iframe, iframeStyles);
         iframe.addEventListener('error', () => {
             const errorMessage = document.createElement('div');
             errorMessage.textContent = 'Failed to load content.';
             modalContent.appendChild(errorMessage);
             console.error('Failed to load iframe content from URL:', url);
-            // TODO: make it show an error interactively ?
         });
 
         // Append elements to the modal content
