@@ -2,13 +2,18 @@
 
 ViewInk is a lightweight, dynamic, and customizable modal popup library for web applications. It allows you to easily create and manage modal windows that display content from a specified URL. ViewInk supports dynamic URL construction using path and query parameters, making it ideal for scenarios like e-commerce product previews, virtual try-ons, or any other use case where you need to display content in a modal.
 
+---
+
 ## Features
 
 - **Dynamic URL Support:** Use placeholders like `:name` and `:slug` in the URL to dynamically construct the modal content URL.
 - **Customizable Styles:** Pass custom styles for the modal container, content, and iframe, or use the built-in default styles.
 - **Event Hooks:** Execute custom actions when the modal opens or closes using `onOpen` and `onClose` callbacks.
+- **Sandbox Security:** Configure the iframe's `sandbox` attribute for enhanced security.
 - **Lightweight:** Minimal dependencies and easy to integrate into any project.
 - **Cross-Framework Compatibility:** Works with any JavaScript framework or vanilla JavaScript.
+
+---
 
 ## Installation
 
@@ -30,6 +35,7 @@ npm install viewink
 | `onOpen` | `() => void` | Callback function executed when the modal is opened. |
 | `onClose` | `() => void` | Callback function executed when the modal is closed. |
 | `styles` | `{ container?: Record<string, string>, content?: Record<string, string>, iframe?: Record<string, string> }` | Optional custom styles for the modal container, content, and iframe. |
+| `sandbox` | `string` | Optional sandbox flags for the iframe (e.g., `allow-scripts allow-same-origin`). |
 
 ### `ModalPopup`
 
@@ -64,6 +70,7 @@ const modal = createModalPopup({
             height: '90vh', // Taller iframe
         },
     },
+    sandbox: 'allow-scripts allow-same-origin', // Custom sandbox flags
     onOpen: () => console.log('Modal opened!'),
     onClose: () => console.log('Modal closed!'),
 });
@@ -79,12 +86,14 @@ The modal will open at `http://127.0.0.1/store/666?color=black&size=medium`.
 
 ---
 
-## Default Styles
+## Default Styles and Sandbox
 
-ViewInk provides default styles for the modal container, content, and iframe. These styles can be overridden by passing custom styles in the `ModalPopupConfig`.
+ViewInk provides default styles and sandbox configurations that you can use or override.
+
+### **Default Styles**
 
 ```typescript
-const DEFAULT_STYLES = {
+const STYLES = {
     container: {
         position: 'fixed',
         top: '0',
@@ -113,6 +122,12 @@ const DEFAULT_STYLES = {
         borderRadius: '4px',
     },
 };
+```
+
+### **Default Sandbox**
+
+```typescript
+const SANDBOX = 'allow-scripts allow-same-origin';
 ```
 
 ---

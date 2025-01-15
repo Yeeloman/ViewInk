@@ -1,48 +1,6 @@
-export type ModalPopupConfig = {
-    /**
-     * The base URL for the modal. Use placeholders like `:store_name` and `:product_slug`
-     * for dynamic path segments.
-     * Example: "https://example.com/:store_name/:product_slug/"
-     */
-    url?: string;
-    onClose?: () => void;
-    onOpen?: () => void;
-    styles?: {
-        container?: Record<string, string>;
-        content?: Record<string, string>;
-        iframe?: Record<string, string>;
-    };
-};
-
-const DEFAULT_STYLES = {
-    container: {
-        position: 'fixed',
-        top: '0',
-        left: '0',
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        backdropFilter: 'blur(10px)',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: '1000',
-    },
-    content: {
-        backgroundColor: 'white',
-        padding: '20px',
-        borderRadius: '8px',
-        width: '80%',
-        maxWidth: '80%',
-        position: 'relative',
-    },
-    iframe: {
-        width: '100%',
-        height: '80vh',
-        border: 'none',
-        borderRadius: '4px',
-    },
-};
+import { DEFAULTS } from 'viewink/defaults';
+import { ModalPopupConfig } from 'viewink/types';
+export type { ModalPopupConfig } from 'viewink/types';
 
 /**
  * Represents a modal popup that can be opened and closed within a browser environment.
@@ -204,9 +162,9 @@ export class ModalPopup {
      */
     private createModalElement(url: string): HTMLElement {
         // Merge user styles with default styles
-        const containerStyles = Object.assign({}, DEFAULT_STYLES.container, this.cfg.styles?.container);
-        const contentStyles = Object.assign({}, DEFAULT_STYLES.content, this.cfg.styles?.content);
-        const iframeStyles = Object.assign({}, DEFAULT_STYLES.iframe, this.cfg.styles?.iframe);
+        const containerStyles = Object.assign({}, DEFAULTS.STYLES.container, this.cfg.styles?.container);
+        const contentStyles = Object.assign({}, DEFAULTS.STYLES.content, this.cfg.styles?.content);
+        const iframeStyles = Object.assign({}, DEFAULTS.STYLES.iframe, this.cfg.styles?.iframe);
 
         // Create the modal container and apply styles
         const modalContainer = document.createElement('div');
@@ -244,7 +202,7 @@ export class ModalPopup {
         // allow-popups-to-escape-sandbox	        Allows popups to escape the sandbox restrictions (e.g., open a new window without sandbox).
         // allow-top-navigation	                    Allows the iframe to navigate the top-level browsing context (i.e., the parent page).
         // allow-top-navigation-by-user-activation	Allows the iframe to navigate the top-level browsing context only if triggered by user interaction (e.g., a click).
-        // iframe.setAttribute('sandbox', '');
+        iframe.setAttribute('sandbox', this.cfg.sandbox || DEFAULTS.SANDBOX);
         this.applyStyles(iframe, iframeStyles);
         iframe.addEventListener('error', () => {
             const errorMessage = document.createElement('div');
