@@ -23,7 +23,7 @@ export type { ModalPopupConfig } from 'viewink/types';
  * 
  * @throws Will throw an error if the URL is not provided or if used outside a browser environment.
  */
-export class ModalPopup {
+class ModalPopup {
     private modalUrl: string | null;
     private onClose: () => void;
     private onOpen: () => void;
@@ -236,6 +236,6 @@ export class ModalPopup {
  * @param config - The configuration object for the modal popup.
  * @returns A new ModalPopup instance.
  */
-export function createModalPopup(config: ModalPopupConfig): ModalPopup {
+export default function createModalPopup(config: ModalPopupConfig): ModalPopup {
     return new ModalPopup(config);
 }
