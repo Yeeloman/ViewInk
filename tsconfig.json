@@ -10,7 +10,18 @@
         "declaration": true,
         "isolatedModules": true,
         "noEmit": true,
-        "outDir": "dist"
+        "outDir": "dist",
+        "paths": {
+            "viewink": [
+                "./src/index.ts"
+            ], // Map "viewink" to your entry point
+            "viewink/defaults": [
+                "./src/defaults.ts"
+            ], // Map "viewink/defaults" to your defaults file
+            "viewink/types": [
+                "./src/types.ts"
+            ]
+        }
     },
     "include": [
         "src"
