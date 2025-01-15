@@ -7,6 +7,11 @@ export type ModalPopupConfig = {
     url?: string;
     onClose?: () => void;
     onOpen?: () => void;
+    // styles?: {
+    //     container?: Record<string, string>;
+    //     content?: Record<string, string>;
+    //     iframe?: Record<string, string>;
+    // };
 };
 
 /**
@@ -185,7 +190,18 @@ export class ModalPopup {
         // Create the iframe
         const iframe = document.createElement('iframe');
         iframe.src = url;
-        // iframe.sandbox = ''; // Add sandbox attribute for security
+        // Flag	                                    Description
+        // allow-scripts	                        Allows the iframe to run JavaScript.
+        // allow-same-origin	                    Allows the iframe to access cookies, localStorage, and other same-origin resources.
+        // allow-forms	                            Allows the iframe to submit forms.
+        // allow-popups	                            Allows the iframe to open new windows or tabs (e.g., via window.open()).
+        // allow-modals	                            Allows the iframe to open modal dialogs (e.g., alert(), confirm()).
+        // allow-pointer-lock	                    Allows the iframe to use the Pointer Lock API.
+        // allow-orientation-lock	                Allows the iframe to lock the screen orientation.
+        // allow-popups-to-escape-sandbox	        Allows popups to escape the sandbox restrictions (e.g., open a new window without sandbox).
+        // allow-top-navigation	                    Allows the iframe to navigate the top-level browsing context (i.e., the parent page).
+        // allow-top-navigation-by-user-activation	Allows the iframe to navigate the top-level browsing context only if triggered by user interaction (e.g., a click).
+        // iframe.setAttribute('sandbox', '');
         iframe.style.cssText = `
         width: 100% !important;
         height: 80vh !important;
@@ -193,6 +209,9 @@ export class ModalPopup {
         border-radius: 4px !important;
     `;
         iframe.addEventListener('error', () => {
+            const errorMessage = document.createElement('div');
+            errorMessage.textContent = 'Failed to load content.';
+            modalContent.appendChild(errorMessage);
             console.error('Failed to load iframe content from URL:', url);
             // TODO: make it show an error interactively ?
         });
