@@ -134,7 +134,7 @@ const SANDBOX = 'allow-scripts allow-same-origin';
 
 ## Browser Compatibility
 
-The `ModalPopup` library is designed to work in modern web browsers. It uses standard DOM APIs and should be compatible with any browser that supports ES6+ features.
+The `ViewInk` library is designed to work in modern web browsers. It uses standard DOM APIs and should be compatible with any browser that supports ES6+ features.
 
 ---
 
