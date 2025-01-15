@@ -58,7 +58,7 @@ ViewInk is perfect for e-commerce websites where you want to display product pre
 import { createModalPopup } from 'viewink';
 
 const modal = createModalPopup({
-    url: 'http://127.0.0.1/:store_name/:product_slug/',
+    url: 'http://127.0.0.1/:name/:slug/',
     styles: {
         container: {
             backgroundColor: 'rgba(0, 0, 0, 0.8)', // Darker background
