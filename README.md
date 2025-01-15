@@ -5,7 +5,7 @@ ViewInk is a lightweight, dynamic, and customizable modal popup library for web 
 ## Features
 
 - **Dynamic URL Support:** Use placeholders like `:name` and `:slug` in the URL to dynamically construct the modal content URL.
-- **Customizable:** Add your own CSS classes to style the modal or use the built-in default styles. (not done yet)
+- **Customizable Styles:** Pass custom styles for the modal container, content, and iframe, or use the built-in default styles.
 - **Event Hooks:** Execute custom actions when the modal opens or closes using `onOpen` and `onClose` callbacks.
 - **Lightweight:** Minimal dependencies and easy to integrate into any project.
 - **Cross-Framework Compatibility:** Works with any JavaScript framework or vanilla JavaScript.
@@ -18,36 +18,54 @@ You can install ViewInk via npm:
 npm install viewink
 ```
 
-### API Reference
+---
 
-#### `ModalPopupConfig`
+## API Reference
+
+### `ModalPopupConfig`
 
 | Property | Type | Description |
 |----------|------|-------------|
 | `url`    | `string` | The base URL for the modal. Use placeholders like `:store_name` and `:product_slug` for dynamic path segments. |
 | `onOpen` | `() => void` | Callback function executed when the modal is opened. |
 | `onClose` | `() => void` | Callback function executed when the modal is closed. |
+| `styles` | `{ container?: Record<string, string>, content?: Record<string, string>, iframe?: Record<string, string> }` | Optional custom styles for the modal container, content, and iframe. |
 
-#### `ModalPopup`
+### `ModalPopup`
 
 | Method | Description |
 |--------|-------------|
 | `openPopup(pathParams: Record<string, string>, queryParams: Record<string, string>)` | Opens the modal with the specified path and query parameters. |
 | `closePopup()` | Closes the currently open modal. |
 
-#### `createModalPopup(config: ModalPopupConfig): ModalPopup`
+### `createModalPopup(config: ModalPopupConfig): ModalPopup`
 
 Creates and returns a new instance of `ModalPopup` using the provided configuration.
+
+---
 
 ## Example Use Case
 
 ViewInk is perfect for e-commerce websites where you want to display product previews or virtual try-ons in a modal. For example:
 
 ```javascript
-import { createModalPopup } from 'ViewInk';
+import { createModalPopup } from 'viewink';
 
 const modal = createModalPopup({
     url: 'http://127.0.0.1/:store_name/:product_slug/',
+    styles: {
+        container: {
+            backgroundColor: 'rgba(0, 0, 0, 0.8)', // Darker background
+        },
+        content: {
+            width: '90%', // Wider content area
+        },
+        iframe: {
+            height: '90vh', // Taller iframe
+        },
+    },
+    onOpen: () => console.log('Modal opened!'),
+    onClose: () => console.log('Modal closed!'),
 });
 
 // When a user clicks on a product
@@ -57,7 +75,47 @@ modal.openPopup(
 );
 ```
 
-the modal will open in `http://127.0.0.1/store/666?color=black&size=medium`
+The modal will open at `http://127.0.0.1/store/666?color=black&size=medium`.
+
+---
+
+## Default Styles
+
+ViewInk provides default styles for the modal container, content, and iframe. These styles can be overridden by passing custom styles in the `ModalPopupConfig`.
+
+```typescript
+const DEFAULT_STYLES = {
+    container: {
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backdropFilter: 'blur(10px)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: '1000',
+    },
+    content: {
+        backgroundColor: 'white',
+        padding: '20px',
+        borderRadius: '8px',
+        width: '80%',
+        maxWidth: '80%',
+        position: 'relative',
+    },
+    iframe: {
+        width: '100%',
+        height: '80vh',
+        border: 'none',
+        borderRadius: '4px',
+    },
+};
+```
+
+---
 
 ## Browser Compatibility
 
@@ -74,9 +132,13 @@ Contributions are welcome! If you'd like to contribute to ViewInk, please follow
 3. Commit your changes and push to your fork.
 4. Submit a pull request.
 
+---
+
 ## License
 
-This project is licensed under the MIT License
+This project is licensed under the MIT License.
+
+---
 
 ## Acknowledgments
 
