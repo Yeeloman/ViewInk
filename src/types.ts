@@ -8,4 +8,5 @@ export type ModalPopupConfig = {
         iframe?: Record<string, string>;
     };
     sandbox?: string;
+    // flags?: string[];
 };

@@ -23,12 +23,14 @@ export type { ModalPopupConfig } from 'viewink/types';
  * 
  * @throws Will throw an error if the URL is not provided or if used outside a browser environment.
  */
-export class ModalPopup {
+class ModalPopup {
     private modalUrl: string | null;
     private onClose: () => void;
     private onOpen: () => void;
     private modalElementMap: WeakMap<ModalPopup, HTMLElement>;
     private cfg: ModalPopupConfig;
+    // private flags: Set<string>;
+
 
     constructor(cfg: ModalPopupConfig) {
         this.modalUrl = cfg.url || null;
@@ -36,6 +38,7 @@ export class ModalPopup {
         this.onOpen = cfg.onOpen || (() => { });
         this.modalElementMap = new WeakMap();
         this.cfg = cfg;
+        // this.flags = new Set(cfg.flags || []);
 
         function debounce<T extends (...args: any[]) => void>(func: T, wait: number): (...args: Parameters<T>) => void {
             let timeout: ReturnType<typeof setTimeout>;
@@ -44,6 +47,8 @@ export class ModalPopup {
                 timeout = setTimeout(() => func.apply(this, args), wait);
             };
         }
+
+        // this.handleMessage = debounce(this.handleMessage.bind(this), 300);
 
         if (typeof window !== 'undefined' && typeof document !== 'undefined') {
             // Cleanup modal before page reload
@@ -55,8 +60,20 @@ export class ModalPopup {
                 }, 300),
                 { once: true }
             );
+            // window.addEventListener('message', this.handleMessage.bind(this), false);
+
         }
     }
+
+    // private handleMessage(event: MessageEvent): void {
+    //     try {
+    //         if (this.flags.has(event.data)) {
+    //             this.closePopup();
+    //         }
+    //     } catch (err) {
+    //         console.error('Error handling message event:', err);
+    //     }
+    // }
 
     /**
      * Constructs a URL by replacing path parameters and appending query parameters.
@@ -236,6 +253,8 @@ export class ModalPopup {
  * @param config - The configuration object for the modal popup.
  * @returns A new ModalPopup instance.
  */
-export function createModalPopup(config: ModalPopupConfig): ModalPopup {
+function createModalPopup(config: ModalPopupConfig): ModalPopup {
     return new ModalPopup(config);
 }
+
+export default createModalPopup;
