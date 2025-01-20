@@ -253,8 +253,8 @@ class ModalPopup {
  * @param config - The configuration object for the modal popup.
  * @returns A new ModalPopup instance.
  */
-function createModalPopup(config: ModalPopupConfig): ModalPopup {
+export function createModalPopup(config: ModalPopupConfig): ModalPopup {
     return new ModalPopup(config);
 }
 
-export default createModalPopup;
+// export default createModalPopup;
