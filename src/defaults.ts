@@ -16,6 +16,7 @@ export const DEFAULTS = {
         },
         content: {
             backgroundColor: 'white',
+            padding: '20px',
             borderRadius: '8px',
             width: '80%',
             maxWidth: '80%',
@@ -23,7 +24,7 @@ export const DEFAULTS = {
         },
         iframe: {
             width: '100%',
-            height: '100vh',
+            height: '80vh',
             border: 'none',
             borderRadius: '4px',
         },
