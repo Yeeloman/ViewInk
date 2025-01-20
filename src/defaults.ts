@@ -17,8 +17,8 @@ export const DEFAULTS = {
         content: {
             backgroundColor: 'white',
             borderRadius: '8px',
-            width: '100%',
-            maxWidth: '100%',
+            width: '80%',
+            maxWidth: '80%',
             position: 'relative',
         },
         iframe: {
