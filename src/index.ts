@@ -29,6 +29,8 @@ class ModalPopup {
     private onOpen: () => void;
     private modalElementMap: WeakMap<ModalPopup, HTMLElement>;
     private cfg: ModalPopupConfig;
+    // private flags: Set<string>;
+
 
     constructor(cfg: ModalPopupConfig) {
         this.modalUrl = cfg.url || null;
@@ -36,6 +38,7 @@ class ModalPopup {
         this.onOpen = cfg.onOpen || (() => { });
         this.modalElementMap = new WeakMap();
         this.cfg = cfg;
+        // this.flags = new Set(cfg.flags || []);
 
         function debounce<T extends (...args: any[]) => void>(func: T, wait: number): (...args: Parameters<T>) => void {
             let timeout: ReturnType<typeof setTimeout>;
@@ -44,6 +47,8 @@ class ModalPopup {
                 timeout = setTimeout(() => func.apply(this, args), wait);
             };
         }
+
+        // this.handleMessage = debounce(this.handleMessage.bind(this), 300);
 
         if (typeof window !== 'undefined' && typeof document !== 'undefined') {
             // Cleanup modal before page reload
@@ -55,8 +60,20 @@ class ModalPopup {
                 }, 300),
                 { once: true }
             );
+            // window.addEventListener('message', this.handleMessage.bind(this), false);
+
         }
     }
+
+    // private handleMessage(event: MessageEvent): void {
+    //     try {
+    //         if (this.flags.has(event.data)) {
+    //             this.closePopup();
+    //         }
+    //     } catch (err) {
+    //         console.error('Error handling message event:', err);
+    //     }
+    // }
 
     /**
      * Constructs a URL by replacing path parameters and appending query parameters.
