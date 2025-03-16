@@ -26,6 +26,7 @@ or import it directly from a CDN:
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/viewink"></script>
+```
 ---
 
 ## API Reference
